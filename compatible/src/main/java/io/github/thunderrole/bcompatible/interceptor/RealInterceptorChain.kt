@@ -1,7 +1,5 @@
 package io.github.thunderrole.bcompatible.interceptor
 
-import io.github.thunderrole.bcompatible.Call
-import io.github.thunderrole.bcompatible.RealCall
 import io.github.thunderrole.bcompatible.Request
 import io.github.thunderrole.bcompatible.Response
 
@@ -13,7 +11,6 @@ import io.github.thunderrole.bcompatible.Response
  */
 class RealInterceptorChain(
     private val index:Int,
-    internal val call: RealCall,
     private val interceptors: List<Interceptor>,
     internal val request: Request
 ) : Interceptor.Chain {
@@ -23,7 +20,7 @@ class RealInterceptorChain(
     internal fun copy(
         index: Int = this.index,
         request: Request = this.request
-    ) = RealInterceptorChain(index, call, interceptors, request)
+    ) = RealInterceptorChain(index, interceptors, request)
 
     override fun request(): Request = request
 
@@ -36,6 +33,4 @@ class RealInterceptorChain(
 
         return response
     }
-
-    override fun call(): Call = call
 }

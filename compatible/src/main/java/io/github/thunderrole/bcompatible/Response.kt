@@ -8,26 +8,44 @@ package io.github.thunderrole.bcompatible
  */
 class Response(
     val request: Request?,
-    val grantResults: List<Int>
+    val grantedResults: List<String>,
+    val deniedResults: List<String>
 ) {
+
 
     fun requset() = request
 
-    fun grantResults() = grantResults
+    fun grantedResults() = grantedResults
+
+    fun deniedResults() = deniedResults
 
     class Builder {
+        internal var status = 0
         internal var request: Request? = null
-        internal var grantResults = mutableListOf<Int>()
+        internal var grantedResults = mutableListOf<String>()
+        internal var deniedResults = mutableListOf<String>()
 
-        fun request(request: Request) = apply {
+        fun status(status: Int) = apply {
+            this.status = status
+        }
+
+        fun request(request: Request?) = apply {
             this.request = request
         }
 
-        fun grantResult(grantResult: Int) = apply {
-            this.grantResults += grantResult
+        fun grantedResult(grantResult: String) = apply {
+            this.grantedResults += grantResult
         }
 
-        fun build(): Response = Response(this.request, this.grantResults)
+        fun grantedResults(grantResult: MutableList<String>) = apply {
+            this.grantedResults += grantResult
+        }
+
+        fun deniedResults(deniedResults: MutableList<String>) = apply {
+            this.deniedResults += deniedResults
+        }
+
+        fun build(): Response = Response(this.request, this.grantedResults, this.deniedResults)
     }
 
 }

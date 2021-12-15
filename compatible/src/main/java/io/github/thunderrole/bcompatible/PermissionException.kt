@@ -8,6 +8,12 @@ import kotlin.Exception
  *
  * @date 2021/12/14
  */
-class PermissionException : Exception() {
+class PermissionException : Exception {
+
+    constructor():super(){
+
+    }
+
+    constructor(msg:String?):super(msg)
 
 }

@@ -7,7 +7,9 @@ package io.github.thunderrole.bcompatible
  * @date 2021/12/14
  */
 interface Callback {
-    fun onSuccess(call: Call, response: Response)
+    fun onRequestPermission(request: Request?)
 
-    fun onFailure(call: Call, e: PermissionException)
+    fun onGrantedPermission(permissions:List<String>)
+
+    fun onDeniedPermission(permissions: List<String>)
 }

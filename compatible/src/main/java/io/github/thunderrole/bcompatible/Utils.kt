@@ -1,6 +1,9 @@
 package io.github.thunderrole.bcompatible
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.content.ContextCompat
 import java.util.*
 
 /**
@@ -28,3 +31,14 @@ fun isAndroid8() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSI
 fun isAndroid9() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
 fun isAndroid10() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.R
 fun isAndroid11() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
+fun isGrantedPermission(context: Context,permission:String) = ContextCompat.checkSelfPermission(context,permission) == PackageManager.PERMISSION_GRANTED
+
+fun isAllGrantedPermission(context: Context,permissions:List<String>):Boolean{
+    for (permission in permissions) {
+        if (!isGrantedPermission(context,permission)) {
+            return false
+        }
+    }
+    return true
+}

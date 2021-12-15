@@ -1,10 +1,10 @@
 package io.github.thunderrole.bcompatible
 
 import android.Manifest
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,24 +14,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val permissionHelper = Compatible.Builder()
-            .build()
 
-        val request = Request.Builder()
-            .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .body("这是个啥？")
-            .build()
+        findViewById<TextView>(R.id.aaa).setOnClickListener {
+           Compatible.bindLife(this)
+               .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+               .callback(object : Callback{
+                   override fun onRequestPermission(request: Request?) {
 
-        permissionHelper.newCall(request).asyn(object : Callback{
-            override fun onSuccess(call: Call, response: Response) {
-                val request1 = response.request
-                Log.d(TAG, "onSuccess: ${request1?.body}")
-            }
+                   }
 
-            override fun onFailure(call: Call, e: PermissionException) {
+                   override fun onGrantedPermission(permissions: List<String>) {
+                       for (permission in permissions) {
+                           Log.d(TAG, "onGrantedPermission: $permission")
+                       }
+                   }
 
-            }
+                   override fun onDeniedPermission(permissions: List<String>) {
+                       for (permission in permissions) {
+                           Log.d(TAG, "onDeniedPermission: $permission")
+                       }
+                   }
 
-        })
+               })
+        }
     }
 }
