@@ -9,6 +9,8 @@ package io.github.thunderrole.bcompatible
 interface Call {
     fun request():Request
 
+    fun execute():Response
+
     fun asyn(callback: Callback)
 
     interface Factory {

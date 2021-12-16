@@ -15,28 +15,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+        val compatible = Compatible.Builder()
+            .build()
+
+        val request = Request.Builder()
+            .setPermission(Manifest.permission.CAMERA)
+            .setContext(this)
+            .build()
+
         findViewById<TextView>(R.id.aaa).setOnClickListener {
-           PermissionFragment.bindLife(this)
-               .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-               .addPermission(Manifest.permission.CAMERA)
-               .callback(object : Callback{
-                   override fun onRequestPermission(request: Request?) {
-
-                   }
-
-                   override fun onGrantedPermission(permissions: List<String>) {
-                       for (permission in permissions) {
-                           Log.d(TAG, "onGrantedPermission: $permission")
-                       }
-                   }
-
-                   override fun onDeniedPermission(permissions: List<String>) {
-                       for (permission in permissions) {
-                           Log.d(TAG, "onDeniedPermission: $permission")
-                       }
-                   }
-
-               })
+           val response = compatible.newCall(request).execute()
+            Log.d(TAG, "onCreate: $response")
         }
     }
 }

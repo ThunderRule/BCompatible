@@ -22,7 +22,7 @@ class RealCall constructor(
 
     }
 
-    fun execute() = getResponseWithInterceptorChain()
+    override fun execute() = getResponseWithInterceptorChain()
 
     internal fun getResponseWithInterceptorChain(): Response {
         val interceptors = mutableListOf<Interceptor>()

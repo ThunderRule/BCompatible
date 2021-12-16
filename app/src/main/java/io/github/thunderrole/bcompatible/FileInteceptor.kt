@@ -12,7 +12,8 @@ import io.github.thunderrole.bcompatible.interceptor.Interceptor
  */
 class FileInteceptor : Interceptor {
     private val TAG = "FileInteceptor"
-    override suspend fun intercept(chain: Interceptor.Chain): Response {
+
+    override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         if (request.permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Log.d(TAG, "intercept: 为了能够让你选择其他二维码，我们必须需要请求读取你手机文件的权限，否则你将我发选择其他二维码进行继续操作。")

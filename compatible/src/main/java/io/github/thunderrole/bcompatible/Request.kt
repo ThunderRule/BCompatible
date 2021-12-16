@@ -32,7 +32,11 @@ class Request internal constructor(
             this.type = type
         }
 
-        internal fun setPermissions(permissions: List<String>) = apply {
+        fun setPermission(permission:String) = apply {
+            this.permissions.add(permission)
+        }
+
+        fun setPermissions(permissions: List<String>) = apply {
             this.permissions.addAll(permissions)
         }
 

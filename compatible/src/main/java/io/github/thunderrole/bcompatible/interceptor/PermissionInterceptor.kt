@@ -23,8 +23,8 @@ class PermissionInterceptor: Interceptor {
         val request = chain.request()
         val context = request.context
         if (context is FragmentActivity) {
-            runBlocking {
-                val response = suspendCoroutine<Response?> {
+            var def = GlobalScope.async {
+                suspendCoroutine<Response> {
                     PermissionFragment.bindLife(context)
                         .addPermissions(request.permissions)
                         .callback(object : Callback {
@@ -33,17 +33,25 @@ class PermissionInterceptor: Interceptor {
                             }
 
                             override fun onGrantedPermission(permissions: List<String>) {
-                                it.resume(null)
+                                it.resume(Response.Builder()
+                                    .grantedResults(permissions)
+                                    .build())
                             }
 
                             override fun onDeniedPermission(permissions: List<String>) {
-
+                                it.resume(Response.Builder()
+                                    .deniedResults(permissions)
+                                    .build())
                             }
 
                         })
                 }
-
             }
+
+            return def.getCompleted()
+        }else{
+            return Response.Builder()
+                .build()
         }
     }
 }

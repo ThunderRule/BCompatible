@@ -39,11 +39,11 @@ class Response(
             this.grantedResults += grantResult
         }
 
-        fun grantedResults(grantResult: MutableList<String>) = apply {
+        fun grantedResults(grantResult: List<String>) = apply {
             this.grantedResults += grantResult
         }
 
-        fun deniedResults(deniedResults: MutableList<String>) = apply {
+        fun deniedResults(deniedResults: List<String>) = apply {
             this.deniedResults += deniedResults
         }
 
