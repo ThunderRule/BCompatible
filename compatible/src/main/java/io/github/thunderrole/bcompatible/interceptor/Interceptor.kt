@@ -1,5 +1,6 @@
 package io.github.thunderrole.bcompatible.interceptor
 
+import io.github.thunderrole.bcompatible.Call
 import io.github.thunderrole.bcompatible.Request
 import io.github.thunderrole.bcompatible.Response
 
@@ -15,5 +16,7 @@ interface Interceptor {
     interface Chain{
         fun request():Request
         fun proceed(request: Request):Response
+
+        fun call(): Call
     }
 }

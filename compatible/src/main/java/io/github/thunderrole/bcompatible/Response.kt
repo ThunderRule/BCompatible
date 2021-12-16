@@ -7,11 +7,13 @@ package io.github.thunderrole.bcompatible
  * @date 2021/12/13
  */
 class Response(
+    val status: Int,
     val request: Request?,
     val grantedResults: List<String>,
     val deniedResults: List<String>
 ) {
 
+    fun status() = status
 
     fun requset() = request
 
@@ -45,7 +47,7 @@ class Response(
             this.deniedResults += deniedResults
         }
 
-        fun build(): Response = Response(this.request, this.grantedResults, this.deniedResults)
+        fun build(): Response = Response(this.status,this.request, this.grantedResults, this.deniedResults)
     }
 
 }

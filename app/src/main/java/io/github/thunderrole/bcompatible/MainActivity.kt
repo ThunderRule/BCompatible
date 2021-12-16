@@ -16,8 +16,9 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<TextView>(R.id.aaa).setOnClickListener {
-           Compatible.bindLife(this)
+           PermissionFragment.bindLife(this)
                .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+               .addPermission(Manifest.permission.CAMERA)
                .callback(object : Callback{
                    override fun onRequestPermission(request: Request?) {
 

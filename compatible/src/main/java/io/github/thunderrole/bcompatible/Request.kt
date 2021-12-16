@@ -12,41 +12,36 @@ import androidx.fragment.app.FragmentActivity
  * @date 2021/12/13
  */
 class Request internal constructor(
+    val context: Context?,
     val type: String?,
     var body: String?,
     val permissions: ArrayList<String>
 ) {
-    internal var fragment: Fragment? = null
-
-
-    internal fun setFragment(fragment: Fragment?) = apply {
-        this.fragment = fragment
-    }
 
     class Builder {
+        internal var context: Context? = null
         internal var type: String? = null
         internal var permissions: ArrayList<String> = arrayListOf()
         internal var body: String? = null
 
+        fun setContext(context: Context?) = apply {
+            this.context = context
+        }
 
-        fun type(type: String?) = apply {
+        fun setType(type: String?) = apply {
             this.type = type
         }
 
-        fun permission(permission: String) = apply {
-            this.permissions += permission
-        }
-
-        internal fun permissions(permissions: List<String>) = apply {
+        internal fun setPermissions(permissions: List<String>) = apply {
             this.permissions.addAll(permissions)
         }
 
-        fun body(body: String?) = apply {
+        fun setBody(body: String?) = apply {
             this.body = body
         }
 
         fun build(): Request {
-            return Request(this.type, this.body, this.permissions)
+            return Request(this.context, this.type, this.body, this.permissions)
         }
     }
 

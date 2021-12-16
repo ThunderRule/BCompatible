@@ -1,59 +1,49 @@
 package io.github.thunderrole.bcompatible.interceptor
 
-import io.github.thunderrole.bcompatible.*
+import androidx.fragment.app.FragmentActivity
+import io.github.thunderrole.bcompatible.Callback
+import io.github.thunderrole.bcompatible.PermissionFragment
+import io.github.thunderrole.bcompatible.Request
+import io.github.thunderrole.bcompatible.Response
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  *  功能描述：
  *
  *
- * @date 2021/12/15
+ * @date 2021/12/16
  */
-class PermissionInterceptor : Interceptor {
+class PermissionInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val context = request.context
+        if (context is FragmentActivity) {
+            runBlocking {
+                val response = suspendCoroutine<Response?> {
+                    PermissionFragment.bindLife(context)
+                        .addPermissions(request.permissions)
+                        .callback(object : Callback {
+                            override fun onRequestPermission(request: Request?) {
 
-        return when {
-            isAndroid5() -> {
-                request.body = "API21 Android5 H"
-                Response.Builder()
-                    .request(request)
-                    .grantedResults(request.permissions)
-                    .build()
-            }
-            isAndroid6() -> {
-                request.body = "API23 Android6 M"
-                Response.Builder()
-                    .request(request)
-                    .build()
-            }
-            isAndroid9() -> {
-                request.body = "API28 Android9 P"
-                request.fragment?.run {
-                    val requestPermissions = arrayListOf<String>()
-                    val grantedPermission = arrayListOf<String>()
-                    for (permission in request.permissions) {
-                        if (isGrantedPermission(this.context!!, permission)) {
-                            grantedPermission.add(permission)
-                        } else {
-                            requestPermissions.add(permission)
-                        }
-                    }
-                    return Response.Builder()
-                        .request(request)
-                        .grantedResults(grantedPermission)
-                        .deniedResults(requestPermissions)
-                        .build()
+                            }
+
+                            override fun onGrantedPermission(permissions: List<String>) {
+                                it.resume(null)
+                            }
+
+                            override fun onDeniedPermission(permissions: List<String>) {
+
+                            }
+
+                        })
                 }
-                Response.Builder()
-                    .status(-1)
-                    .build()
-            }
-            else -> {
-                val response = chain.proceed(request)
 
-                response
             }
         }
     }
-
 }
