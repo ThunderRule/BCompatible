@@ -50,4 +50,7 @@ class Response(
         fun build(): Response = Response(this.status,this.request, this.grantedResults, this.deniedResults)
     }
 
+    override fun toString(): String {
+        return "status = $status, grateds = $grantedResults, denieds = $deniedResults"
+    }
 }

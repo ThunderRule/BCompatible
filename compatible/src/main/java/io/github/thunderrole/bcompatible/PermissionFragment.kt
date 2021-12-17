@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.github.thunderrole.bcompatible.interceptor.Interceptor
+import java.io.Serializable
 
 /**
  *  功能描述：

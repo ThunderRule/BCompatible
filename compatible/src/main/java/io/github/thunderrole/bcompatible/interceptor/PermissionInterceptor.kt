@@ -7,6 +7,7 @@ import io.github.thunderrole.bcompatible.Request
 import io.github.thunderrole.bcompatible.Response
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.resume
@@ -18,40 +19,34 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @date 2021/12/16
  */
-class PermissionInterceptor: Interceptor {
+class PermissionInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val context = request.context
         if (context is FragmentActivity) {
-            var def = GlobalScope.async {
-                suspendCoroutine<Response> {
-                    PermissionFragment.bindLife(context)
-                        .addPermissions(request.permissions)
-                        .callback(object : Callback {
-                            override fun onRequestPermission(request: Request?) {
+            PermissionFragment.bindLife(context)
+                .addPermissions(request.permissions)
+                .callback(object : Callback {
+                    override fun onRequestPermission(request: Request?) {
 
-                            }
+                    }
 
-                            override fun onGrantedPermission(permissions: List<String>) {
-                                it.resume(Response.Builder()
-                                    .grantedResults(permissions)
-                                    .build())
-                            }
+                    override fun onGrantedPermission(permissions: List<String>) {
 
-                            override fun onDeniedPermission(permissions: List<String>) {
-                                it.resume(Response.Builder()
-                                    .deniedResults(permissions)
-                                    .build())
-                            }
+                    }
 
-                        })
-                }
-            }
+                    override fun onDeniedPermission(permissions: List<String>) {
 
-            return def.getCompleted()
-        }else{
+                    }
+
+                })
+
             return Response.Builder()
+                .status(-1)
                 .build()
+        } else {
+            return chain.proceed(request)
         }
     }
+
 }
