@@ -14,18 +14,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val permissionFragment = PermissionFragment.Builder()
+            .addPermission(Manifest.permission.CAMERA)
+            .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .setCallback(object : Callback {
+                override fun onGrantedPermission(permissions: List<String>) {
+                    Log.d(TAG, "onGrantedPermission: $permissions")
+                }
 
-        val compatible = Compatible.Builder()
-            .build()
+                override fun onDeniedPermission(permissions: List<String>) {
+                    Log.d(TAG, "onDeniedPermission: $permissions")
+                }
 
-        val request = Request.Builder()
-            .setPermission(Manifest.permission.CAMERA)
-            .setContext(this)
-            .build()
+            })
 
         findViewById<TextView>(R.id.aaa).setOnClickListener {
-           val response = compatible.newCall(request).execute()
-            Log.d(TAG, "onCreate: $response")
+            permissionFragment.start(this)
         }
     }
 }

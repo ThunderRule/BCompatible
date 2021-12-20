@@ -1,6 +1,8 @@
 package io.github.thunderrole.bcompatible
 
+import android.Manifest
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
@@ -41,4 +43,12 @@ fun isAllGrantedPermission(context: Context,permissions:List<String>):Boolean{
         }
     }
     return true
+}
+
+fun isSpecialPermission(permission: String):Boolean {
+    return Manifest.permission.MANAGE_EXTERNAL_STORAGE == permission
+            || Manifest.permission.REQUEST_INSTALL_PACKAGES == permission
+            || Manifest.permission.SYSTEM_ALERT_WINDOW == permission
+            || Manifest.permission.WRITE_SETTINGS == permission
+            || Manifest.permission.PACKAGE_USAGE_STATS == permission
 }
