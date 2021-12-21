@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         val permissionFragment = PermissionFragment.Builder()
             .addPermission(Manifest.permission.CAMERA)
             .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .addPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
             .setCallback(object : Callback {
                 override fun onGrantedPermission(permissions: List<String>) {
                     Log.d(TAG, "onGrantedPermission: $permissions")

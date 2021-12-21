@@ -1,5 +1,7 @@
 package io.github.thunderrole.bcompatible
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,12 +15,18 @@ import java.io.Serializable
  *
  * @date 2021/12/14
  */
-class PermissionFragment : Fragment() {
+class PermissionFragment : Fragment {
     private val TAG = "PermissionFragment"
 
     internal val mPermissions = arrayListOf<String>()
     private var mCallback: Callback? = null
     private var mLife: LifecycleObserver? = null
+    private var mBuilder:Builder? = null
+
+    @JvmOverloads
+    constructor(builder: Builder? = null){
+        mBuilder = builder?: Builder()
+    }
 
     private fun attacthActivity(activity: FragmentActivity?) {
         activity?.supportFragmentManager?.beginTransaction()?.add(this, this.toString())
@@ -33,41 +41,14 @@ class PermissionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
-        var builder = arguments?.getSerializable("builder")?.let {
-            it as Builder
+
+        if (mBuilder != null) {
+            mPermissions.addAll(mBuilder!!.permissions)
+            mCallback = mBuilder!!.callback
+            mLife = mBuilder!!.life
         }
 
-        if (builder != null) {
-            mPermissions.addAll(builder.permissions)
-            mCallback = builder.callback
-            mLife = builder.life
-        }
-
-
-
-        val deniedResults = arrayListOf<String>()
-        val grantedResults = arrayListOf<String>()
-
-        if (isAndroid5()){
-            mCallback?.onGrantedPermission(mPermissions)
-        }else{
-            for (permission in mPermissions) {
-                context?.let {
-                    if (isGrantedPermission(it, permission)) {
-                        grantedResults += permission
-                    } else {
-                        deniedResults += permission
-                    }
-                }
-            }
-            if (!deniedResults.isNullOrEmpty()) {
-                requestPermissions(deniedResults.toTypedArray(), 111)
-            }
-            if (!grantedResults.isNullOrEmpty()) {
-                mCallback?.onGrantedPermission(grantedResults)
-            }
-        }
-
+        requestSpecialPermission(mPermissions)
     }
 
     override fun onRequestPermissionsResult(
@@ -107,7 +88,77 @@ class PermissionFragment : Fragment() {
         }
     }
 
-    class Builder : Serializable {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "onActivityResult: $requestCode")
+        when (requestCode) {
+            requestCode(Manifest.permission.MANAGE_EXTERNAL_STORAGE) -> {
+            }
+            requestCode(Manifest.permission.REQUEST_INSTALL_PACKAGES) -> {
+
+            }
+            requestCode(Manifest.permission.SYSTEM_ALERT_WINDOW) -> {
+
+            }
+            requestCode(Manifest.permission.WRITE_SETTINGS) -> {
+
+            }
+            requestCode(Manifest.permission.PACKAGE_USAGE_STATS) -> {
+
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun requestSpecialPermission(permissions: List<String>){
+        var requested = false
+        for (permission in permissions) {
+            if (isSpecialPermission(permission)){
+                if (isGrantedPermission(requireContext(),permission)){
+                    continue
+                }
+                if (Manifest.permission.MANAGE_EXTERNAL_STORAGE == permission && !isHightAndroid11()){
+                    continue
+                }
+                startActivityForResult(PermissionSettingPage.createSmartPermissionIntent(requireContext(),
+                    arrayListOf(permission)), requestCode(permission))
+                requested = true
+            }
+        }
+
+        if (requested){
+            return
+        }
+
+        if (isHightAndroid6()){
+            requestDangerousPermission(permissions)
+        }else{
+            mCallback?.onGrantedPermission(mPermissions)
+        }
+    }
+
+    private fun requestDangerousPermission(permissions: List<String>){
+        val deniedResults = arrayListOf<String>()
+        val grantedResults = arrayListOf<String>()
+        for (permission in permissions) {
+            context?.let {
+                if (isGrantedPermission(it, permission)) {
+                    grantedResults += permission
+                } else if (!isSpecialPermission(permission)){
+                    deniedResults += permission
+                }
+            }
+        }
+        if (!deniedResults.isNullOrEmpty()) {
+            requestPermissions(deniedResults.toTypedArray(), 111)
+        }
+        if (!grantedResults.isNullOrEmpty()) {
+            mCallback?.onGrantedPermission(grantedResults)
+        }
+    }
+
+    class Builder {
         internal val permissions = arrayListOf<String>()
         internal var callback: Callback? = null
         internal var life: LifecycleObserver? = null
@@ -130,12 +181,9 @@ class PermissionFragment : Fragment() {
 
         fun start(activity: FragmentActivity?): PermissionFragment? {
 
-            val lifeFragment = PermissionFragment()
+            val lifeFragment = PermissionFragment(this)
             lifeFragment.retainInstance = true
 
-            val bundle = Bundle()
-            bundle.putSerializable("builder", this)
-            lifeFragment.arguments = bundle
             lifeFragment.attacthActivity(activity)
 
             return lifeFragment
