@@ -1,7 +1,7 @@
 package io.github.thunderrole.bcompatible
 
 /**
- *  功能描述：
+ *  Function：
  *
  *
  * @date 2021/12/20

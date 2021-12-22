@@ -8,18 +8,18 @@ import android.net.Uri
 import android.provider.Settings
 
 /**
- *  功能描述：
+ *  Function：
  *
  *
  * @date 2021/12/21
  */
-object PermissionSettingPage {
+object IntentCreater {
     internal fun createSmartPermissionIntent(context: Context, permissions: List<String>): Intent {
-        if (permissions.isNullOrEmpty() && containsSpecial(permissions)) {
+        if (permissions.isNullOrEmpty() && PermissionUtils.containsSpecial(permissions)) {
             return createApplicationIntent(context)
         }
 
-        if (isHightAndroid11() && permissions.contains(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
+        if (PermissionUtils.isHightAndroid11() && permissions.contains(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
             return createStorageIntent(context)
         }
 
@@ -30,7 +30,7 @@ object PermissionSettingPage {
                 Manifest.permission.REQUEST_INSTALL_PACKAGES -> createInstallIntent(context)
                 Manifest.permission.SYSTEM_ALERT_WINDOW -> createWindowIntent(context)
                 Manifest.permission.WRITE_SETTINGS -> createSettingIntent(context)
-                //TODO 缺少notification
+                //TODO lack notification
                 Manifest.permission.PACKAGE_USAGE_STATS -> createPackageIntent(context)
                 else -> createApplicationIntent(context)
             }
@@ -44,7 +44,7 @@ object PermissionSettingPage {
      */
     internal fun createInstallIntent(context: Context):Intent{
         var intent:Intent? = null
-        if (isHightAndroid8()){
+        if (PermissionUtils.isHightAndroid8()){
             intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
             intent.data = getPackageNameUri(context)
         }
@@ -59,7 +59,7 @@ object PermissionSettingPage {
      */
     internal fun createWindowIntent(context: Context):Intent{
         var intent:Intent? = null
-        if (isHightAndroid6()){
+        if (PermissionUtils.isHightAndroid6()){
             intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
             intent.data = getPackageNameUri(context)
         }
@@ -74,7 +74,7 @@ object PermissionSettingPage {
      */
     internal fun createNotificationIntent(context: Context):Intent{
         var intent:Intent? = null
-        if (isHightAndroid8()){
+        if (PermissionUtils.isHightAndroid8()){
             intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
             intent.putExtra(Settings.EXTRA_APP_PACKAGE,context.packageName)
         }
@@ -89,7 +89,7 @@ object PermissionSettingPage {
      */
     internal fun createSettingIntent(context: Context):Intent{
         var intent:Intent? = null
-        if (isHightAndroid6()){
+        if (PermissionUtils.isHightAndroid6()){
             intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             intent.data = getPackageNameUri(context)
         }
@@ -104,7 +104,7 @@ object PermissionSettingPage {
      */
     internal fun createStorageIntent(context: Context): Intent {
         var intent: Intent? = null
-        if (isHightAndroid11()) {
+        if (PermissionUtils.isHightAndroid11()) {
             intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
             intent.data = getPackageNameUri(context)
         }
@@ -119,9 +119,9 @@ object PermissionSettingPage {
      */
     internal fun createPackageIntent(context: Context):Intent{
         var intent:Intent? = null
-        if (isHightAndroid5()){
+        if (PermissionUtils.isHightAndroid5()){
             intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            if (isHightAndroid10()){
+            if (PermissionUtils.isHightAndroid10()){
                 intent.data = getPackageNameUri(context)
             }
         }

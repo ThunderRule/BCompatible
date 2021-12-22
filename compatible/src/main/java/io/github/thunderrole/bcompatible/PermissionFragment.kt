@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleObserver
-import java.io.Serializable
 
 /**
  *  功能描述：
@@ -21,11 +20,11 @@ class PermissionFragment : Fragment {
     internal val mPermissions = arrayListOf<String>()
     private var mCallback: Callback? = null
     private var mLife: LifecycleObserver? = null
-    private var mBuilder:Builder? = null
+    private var mBuilder: Builder? = null
 
     @JvmOverloads
-    constructor(builder: Builder? = null){
-        mBuilder = builder?: Builder()
+    constructor(builder: Builder? = null) {
+        mBuilder = builder ?: Builder()
     }
 
     private fun attacthActivity(activity: FragmentActivity?) {
@@ -40,12 +39,11 @@ class PermissionFragment : Fragment {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: ")
 
-        if (mBuilder != null) {
-            mPermissions.addAll(mBuilder!!.permissions)
-            mCallback = mBuilder!!.callback
-            mLife = mBuilder!!.life
+        mBuilder?.let {
+            mPermissions.addAll(it.permissions)
+            mCallback = it.callback
+            mLife = it.life
         }
 
         requestSpecialPermission(mPermissions)
@@ -66,9 +64,12 @@ class PermissionFragment : Fragment {
 
         val grantedPermissions = arrayListOf<String>()
         val deniedPermissions = arrayListOf<String>()
+        val foreverDeniedPermissions = arrayListOf<String>()
         for (permission in permissions) {
-            if (isGrantedPermission(context!!, permission)) {
+            if (PermissionUtils.isGrantedPermission(context!!, permission)) {
                 grantedPermissions += permission
+            } else if (PermissionUtils.isDeniedForever(activity!!, permission)) {
+                foreverDeniedPermissions += permission
             } else {
                 deniedPermissions += permission
             }
@@ -82,6 +83,10 @@ class PermissionFragment : Fragment {
             mCallback?.onDeniedPermission(deniedPermissions)
         }
 
+        if (foreverDeniedPermissions.isNotEmpty()) {
+            mCallback?.onForeverDeniedPermission(foreverDeniedPermissions)
+        }
+
         detachActivity(activity)
         mLife?.let {
             lifecycle.removeObserver(it)
@@ -91,61 +96,99 @@ class PermissionFragment : Fragment {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult: $requestCode")
-        when (requestCode) {
-            requestCode(Manifest.permission.MANAGE_EXTERNAL_STORAGE) -> {
+        context?.let {
+            val grantResults = arrayListOf<String>()
+            val deniedResults = arrayListOf<String>()
+            when (requestCode) {
+                PermissionUtils.requestCode(Manifest.permission.MANAGE_EXTERNAL_STORAGE) -> {
+                    if (PermissionUtils.isGrantedStoragePermission(it)) {
+                        grantResults += Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    } else {
+                        deniedResults += Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    }
+                }
+                PermissionUtils.requestCode(Manifest.permission.REQUEST_INSTALL_PACKAGES) -> {
+                    if (PermissionUtils.isGrantedInstallPermission(it)) {
+                        grantResults += Manifest.permission.REQUEST_INSTALL_PACKAGES
+                    } else {
+                        deniedResults += Manifest.permission.REQUEST_INSTALL_PACKAGES
+                    }
+                }
+                PermissionUtils.requestCode(Manifest.permission.SYSTEM_ALERT_WINDOW) -> {
+                    if (PermissionUtils.isGrantedWindowPermission(it)) {
+                        grantResults += Manifest.permission.SYSTEM_ALERT_WINDOW
+                    } else {
+                        deniedResults += Manifest.permission.SYSTEM_ALERT_WINDOW
+                    }
+                }
+                PermissionUtils.requestCode(Manifest.permission.WRITE_SETTINGS) -> {
+                    if (PermissionUtils.isGrantedSettingPermission(it)) {
+                        grantResults += Manifest.permission.WRITE_SETTINGS
+                    } else {
+                        deniedResults += Manifest.permission.WRITE_SETTINGS
+                    }
+                }
+                PermissionUtils.requestCode(Manifest.permission.PACKAGE_USAGE_STATS) -> {
+                    if (PermissionUtils.isGrantedPackagePermission(it)) {
+                        grantResults += Manifest.permission.PACKAGE_USAGE_STATS
+                    } else {
+                        deniedResults += Manifest.permission.PACKAGE_USAGE_STATS
+                    }
+                }
+                else -> {
+                }
             }
-            requestCode(Manifest.permission.REQUEST_INSTALL_PACKAGES) -> {
-
+            if (grantResults.isNotEmpty()) {
+                mCallback?.onGrantedPermission(grantResults)
             }
-            requestCode(Manifest.permission.SYSTEM_ALERT_WINDOW) -> {
-
+            if (deniedResults.isNotEmpty()) {
+                mCallback?.onDeniedPermission(deniedResults)
             }
-            requestCode(Manifest.permission.WRITE_SETTINGS) -> {
-
-            }
-            requestCode(Manifest.permission.PACKAGE_USAGE_STATS) -> {
-
-            }
-            else -> {
-            }
+            requestDangerousPermission()
         }
     }
 
-    private fun requestSpecialPermission(permissions: List<String>){
+    private fun requestSpecialPermission(permissions: List<String>) {
         var requested = false
         for (permission in permissions) {
-            if (isSpecialPermission(permission)){
-                if (isGrantedPermission(requireContext(),permission)){
+            if (PermissionUtils.isSpecialPermission(permission)) {
+                if (PermissionUtils.isGrantedPermission(requireContext(), permission)) {
                     continue
                 }
-                if (Manifest.permission.MANAGE_EXTERNAL_STORAGE == permission && !isHightAndroid11()){
+                if (Manifest.permission.MANAGE_EXTERNAL_STORAGE == permission && !PermissionUtils.isHightAndroid11()) {
                     continue
                 }
-                startActivityForResult(PermissionSettingPage.createSmartPermissionIntent(requireContext(),
-                    arrayListOf(permission)), requestCode(permission))
+                startActivityForResult(
+                    IntentCreater.createSmartPermissionIntent(
+
+                        requireContext(),
+                        arrayListOf(permission)
+                    ), PermissionUtils.requestCode(permission)
+                )
                 requested = true
             }
         }
 
-        if (requested){
+        if (requested) {
             return
         }
 
-        if (isHightAndroid6()){
-            requestDangerousPermission(permissions)
-        }else{
-            mCallback?.onGrantedPermission(mPermissions)
-        }
+        requestDangerousPermission()
     }
 
-    private fun requestDangerousPermission(permissions: List<String>){
+    private fun requestDangerousPermission() {
+        if (!PermissionUtils.isHightAndroid6()) {
+            val filter = mPermissions.filter { PermissionUtils.isGrantedPermission(context!!, it) }
+            mCallback?.onGrantedPermission(filter)
+            return
+        }
         val deniedResults = arrayListOf<String>()
         val grantedResults = arrayListOf<String>()
-        for (permission in permissions) {
+        for (permission in mPermissions) {
             context?.let {
-                if (isGrantedPermission(it, permission)) {
+                if (PermissionUtils.isGrantedPermission(it, permission)) {
                     grantedResults += permission
-                } else if (!isSpecialPermission(permission)){
+                } else if (!PermissionUtils.isSpecialPermission(permission)) {
                     deniedResults += permission
                 }
             }
@@ -156,6 +199,11 @@ class PermissionFragment : Fragment {
         if (!grantedResults.isNullOrEmpty()) {
             mCallback?.onGrantedPermission(grantedResults)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mCallback = null
     }
 
     class Builder {

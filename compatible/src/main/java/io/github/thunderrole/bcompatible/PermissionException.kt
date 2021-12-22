@@ -3,7 +3,7 @@ package io.github.thunderrole.bcompatible
 import kotlin.Exception
 
 /**
- *  功能描述：
+ *  Function：
  *
  *
  * @date 2021/12/14
