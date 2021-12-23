@@ -44,7 +44,7 @@ object PermissionUtils {
     /**
      * Whether to grant permission
      */
-    fun isGrantedPermission(context: Context, permission: String) = if (isHightAndroid6()){
+    fun isGrantedPermission(context: Context, permission: String) = if (!isHightAndroid6()){
         true
     }else{
         when (permission) {
@@ -211,6 +211,6 @@ object PermissionUtils {
     fun requestCode(permission: String): Int = requestCodeMap[permission] ?: 1
 
     fun containsSpecial(permissions: List<String>): Boolean =
-        permissions.filter { isSpecialPermission(it) }.isNotEmpty()
+        permissions.any { isSpecialPermission(it) }
 
 }
