@@ -31,6 +31,8 @@ class DialogInterceptor : Interceptor {
                             }
                         }
                     }.create().show()
+            }else{
+                chain.proceed(request,callback)
             }
         }
 
