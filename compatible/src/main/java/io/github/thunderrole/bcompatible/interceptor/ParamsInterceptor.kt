@@ -1,7 +1,5 @@
 package io.github.thunderrole.bcompatible.interceptor
 
-import android.util.Log
-import io.github.thunderrole.bcompatible.PermissionUtils
 import io.github.thunderrole.bcompatible.Response
 
 /**
@@ -11,13 +9,14 @@ import io.github.thunderrole.bcompatible.Response
  * @date 2021/12/23
  */
 class ParamsInterceptor : Interceptor {
-    override fun interceptor(chain: Interceptor.Chain, callback: (response: Response) -> Unit) {
+    override fun interceptor(chain: Interceptor.Chain, callback: GoBack) {
         val request = chain.request()
 
-        chain.proceed(request){
-            createMap(it)
-            callback.invoke(it)
-        }
+        chain.proceed(request,
+            GoBack {
+                createMap(it)
+                callback.onPermissionBack(it)
+            })
     }
 
     private fun createMap(response: Response){

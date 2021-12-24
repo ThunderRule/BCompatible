@@ -1,10 +1,7 @@
 package io.github.thunderrole.bcompatible
 
 import android.content.Context
-import io.github.thunderrole.bcompatible.interceptor.Interceptor
-import io.github.thunderrole.bcompatible.interceptor.InterceptorChain
-import io.github.thunderrole.bcompatible.interceptor.PermissionInterceptor
-import io.github.thunderrole.bcompatible.interceptor.ParamsInterceptor
+import io.github.thunderrole.bcompatible.interceptor.*
 
 /**
  *  Function：
@@ -16,7 +13,7 @@ class BCompatible(builder:Builder) {
     private val mPermissions = builder.permissions
     private val mInterceptors = builder.interceptors
 
-    fun start(context: Context?, callback: (response: Response) -> Unit) {
+    fun start(context: Context?, callback: GoBack) {
         val request = Request.Builder()
             .setPermissions(mPermissions)
             .setContext(context)
@@ -26,7 +23,7 @@ class BCompatible(builder:Builder) {
 
     }
 
-    private fun callbackWithChain(request: Request, callback: (response: Response) -> Unit) {
+    private fun callbackWithChain(request: Request, callback: GoBack) {
         val interceptors = arrayListOf<Interceptor>()
         interceptors += mInterceptors
         interceptors += ParamsInterceptor()
@@ -36,7 +33,7 @@ class BCompatible(builder:Builder) {
             InterceptorChain(interceptors = interceptors, index = 0, request = request)
 
         chain.proceed(request){
-            callback.invoke(it)
+            callback.onPermissionBack(it)
             request.clear()
         }
     }

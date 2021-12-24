@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(){
 
         findViewById<TextView>(R.id.aaa).setOnClickListener {
             compatible.start(this){
-
+                Log.d(TAG, "onCreate: $it")
             }
         }
     }

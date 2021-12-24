@@ -1,10 +1,7 @@
 package io.github.thunderrole.bcompatible.interceptor
 
 import androidx.fragment.app.FragmentActivity
-import io.github.thunderrole.bcompatible.Callback
-import io.github.thunderrole.bcompatible.PermissionFragment
-import io.github.thunderrole.bcompatible.Request
-import io.github.thunderrole.bcompatible.Response
+import io.github.thunderrole.bcompatible.*
 
 /**
  *  Function：
@@ -14,7 +11,7 @@ import io.github.thunderrole.bcompatible.Response
  */
 class PermissionInterceptor : Interceptor {
 
-    override fun interceptor(chain: Interceptor.Chain, callback: (response: Response) -> Unit) {
+    override fun interceptor(chain: Interceptor.Chain, callback: GoBack) {
         val request = chain.request()
         val builder = Response.Builder()
         PermissionFragment.Builder()
@@ -41,9 +38,9 @@ class PermissionInterceptor : Interceptor {
             }).start(request.getContext().let { it as FragmentActivity })
     }
 
-    private fun comeback(request: Request,builder:Response.Builder,callback: (response: Response) -> Unit){
+    private fun comeback(request: Request,builder:Response.Builder,callback: GoBack){
         if (builder.status == request.getPermissions().size){
-            callback.invoke(builder.build())
+            callback.onPermissionBack(builder.build())
         }
     }
 }

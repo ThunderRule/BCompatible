@@ -1,7 +1,6 @@
 package io.github.thunderrole.bcompatible.interceptor
 
 import io.github.thunderrole.bcompatible.Request
-import io.github.thunderrole.bcompatible.Response
 
 /**
  *  Function：
@@ -21,7 +20,7 @@ class InterceptorChain(
 
     override fun request() = request
 
-    override fun proceed(request: Request, callback: (response: Response) -> Unit) {
+    override fun proceed(request: Request, callback: GoBack) {
         check(index < interceptors.size)
 
         calls++

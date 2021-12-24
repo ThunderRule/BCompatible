@@ -1,6 +1,8 @@
 package io.github.thunderrole.bcompatible
 
+import android.app.Activity
 import android.app.AlertDialog
+import io.github.thunderrole.bcompatible.interceptor.GoBack
 import io.github.thunderrole.bcompatible.interceptor.Interceptor
 
 /**
@@ -10,29 +12,38 @@ import io.github.thunderrole.bcompatible.interceptor.Interceptor
  * @date 2021/12/23
  */
 class DialogInterceptor : Interceptor {
-    override fun interceptor(chain: Interceptor.Chain, callback: (response: Response) -> Unit) {
+    override fun interceptor(chain: Interceptor.Chain, callback: GoBack) {
         val request = chain.request()
         val permissions = request.getPermissions()
         request.getContext()?.let {
-            if (!PermissionUtils.isAllGrantedPermission(it,permissions)) {
+            if (PermissionUtils.isDeniedForever(it as Activity,permissions)){
                 AlertDialog.Builder(request.getContext())
-                    .setMessage("我想用啊~~~")
-                    .setNegativeButton(
-                        "嗯？"
-                    ) { _, _ ->
-                        chain.proceed(request) {
-                            if (it.foreverDenieds.isNotEmpty()) {
-                                AlertDialog.Builder(request.getContext())
-                                    .setMessage("被永久拒绝了，你不能用了")
-                                    .setNegativeButton("哈") { aaa, _ ->
-                                        callback.invoke(it)
-                                        aaa.dismiss() }
-                                    .create().show()
-                            }
-                        }
-                    }.create().show()
+                    .setMessage("被永久拒绝了，你不能用了")
+                    .setNegativeButton("哈") { aaa, _ ->
+                        callback.onPermissionBack(null)
+                        aaa.dismiss() }
+                    .create().show()
             }else{
-                chain.proceed(request,callback)
+                if (!PermissionUtils.isAllGrantedPermission(it,permissions)) {
+                    AlertDialog.Builder(request.getContext())
+                        .setMessage("我想用啊~~~")
+                        .setNegativeButton(
+                            "嗯？"
+                        ) { _, _ ->
+                            chain.proceed(request) {
+                                if (it.foreverDenieds.isNotEmpty()) {
+                                    AlertDialog.Builder(request.getContext())
+                                        .setMessage("被永久拒绝了，你不能用了")
+                                        .setNegativeButton("哈") { aaa, _ ->
+                                            callback.onPermissionBack(it)
+                                            aaa.dismiss() }
+                                        .create().show()
+                                }
+                            }
+                        }.create().show()
+                }else{
+                    chain.proceed(request,callback)
+                }
             }
         }
 
