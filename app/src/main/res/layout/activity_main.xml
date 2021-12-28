@@ -10,30 +10,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:layout_height="match_parent">
 
             <Button
                 android:layout_width="wrap_content"
                 android:text="相机"
                 android:id="@+id/bt_camera"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:text="安装"
-                android:id="@+id/bt_install"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:text="系统浮窗"
-                android:id="@+id/bt_alert"
                 android:layout_height="wrap_content"/>
 
             <Button
@@ -48,14 +37,6 @@
                 android:id="@+id/bt_read_write"
                 android:layout_height="wrap_content"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-
             <Button
                 android:layout_width="wrap_content"
                 android:text="录音"
@@ -66,12 +47,6 @@
                 android:layout_width="wrap_content"
                 android:text="手机状态"
                 android:id="@+id/bt_phone_state"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:text="修改设置"
-                android:id="@+id/bt_write_setting"
                 android:layout_height="wrap_content"/>
 
             <Button
@@ -88,19 +63,72 @@
 
             <Button
                 android:layout_width="wrap_content"
+                android:text="定位"
+                android:id="@+id/bt_location"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:text="安装"
+                android:id="@+id/bt_install"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:text="系统浮窗"
+                android:id="@+id/bt_alert"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:text="修改设置"
+                android:id="@+id/bt_write_setting"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:text="读取包权限"
+                android:id="@+id/bt_package"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="wrap_content"
                 android:text="多个权限"
                 android:id="@+id/bt_many"
                 android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:text="弹窗拦截器"
+                android:id="@+id/bt_dialog"
+                android:layout_height="wrap_content"/>
+
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Hello World!"
-        android:id="@+id/aaa" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Hello World!"
+            android:id="@+id/aaa" />
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

@@ -16,17 +16,7 @@ class ParamsInterceptor : Interceptor {
         val permissions = request.getPermissions()
 
         request.getContext()?.let { context ->
-            val granteds = arrayListOf<String>()
-            val denieds = arrayListOf<String>()
-
-            for (permission in permissions) {
-                if (PermissionUtils.isGrantedPermission(context, permission)) {
-                    granteds += permission
-                } else {
-                    denieds += permission
-                }
-            }
-
+            val granteds = permissions.filter { PermissionUtils.isGrantedPermission(context,it) }
             if (granteds.size == permissions.size) {
                 val response = Response.Builder()
                     .setStatus(permissions.size)
@@ -53,6 +43,10 @@ class ParamsInterceptor : Interceptor {
         for (denied in response.denieds) {
             map[denied] = false
         }
+        for (denied in response.foreverDenieds) {
+            map[denied] = false
+        }
+
         response.setResultMap(map)
     }
 }

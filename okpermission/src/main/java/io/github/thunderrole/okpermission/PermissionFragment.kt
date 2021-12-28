@@ -14,16 +14,14 @@ import androidx.lifecycle.LifecycleObserver
  *
  * @date 2021/12/14
  */
-class PermissionFragment : Fragment {
-    private val TAG = "PermissionFragment"
+class PermissionFragment @JvmOverloads constructor(builder: Builder? = null) : Fragment() {
 
     internal val mPermissions = arrayListOf<String>()
     private var mCallback: Callback? = null
     private var mLife: LifecycleObserver? = null
     private var mBuilder: Builder? = null
 
-    @JvmOverloads
-    constructor(builder: Builder? = null) {
+    init {
         mBuilder = builder ?: Builder()
     }
 
@@ -54,7 +52,6 @@ class PermissionFragment : Fragment {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Log.d(TAG, "onRequestPermissionsResult: ")
 
         if (permissions.isNullOrEmpty()
             || grantResults == null || grantResults.isEmpty()
@@ -95,51 +92,36 @@ class PermissionFragment : Fragment {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "onActivityResult: $requestCode")
         context?.let {
-            val grantResults = arrayListOf<String>()
             val deniedResults = arrayListOf<String>()
             when (requestCode) {
                 PermissionUtils.requestCode(Manifest.permission.MANAGE_EXTERNAL_STORAGE) -> {
-                    if (PermissionUtils.isGrantedStoragePermission(it)) {
-                        grantResults += Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                    } else {
+                    if (!PermissionUtils.isGrantedStoragePermission(it)) {
                         deniedResults += Manifest.permission.MANAGE_EXTERNAL_STORAGE
                     }
                 }
                 PermissionUtils.requestCode(Manifest.permission.REQUEST_INSTALL_PACKAGES) -> {
-                    if (PermissionUtils.isGrantedInstallPermission(it)) {
-                        grantResults += Manifest.permission.REQUEST_INSTALL_PACKAGES
-                    } else {
+                    if (!PermissionUtils.isGrantedInstallPermission(it)) {
                         deniedResults += Manifest.permission.REQUEST_INSTALL_PACKAGES
                     }
                 }
                 PermissionUtils.requestCode(Manifest.permission.SYSTEM_ALERT_WINDOW) -> {
-                    if (PermissionUtils.isGrantedWindowPermission(it)) {
-                        grantResults += Manifest.permission.SYSTEM_ALERT_WINDOW
-                    } else {
+                    if (!PermissionUtils.isGrantedWindowPermission(it)) {
                         deniedResults += Manifest.permission.SYSTEM_ALERT_WINDOW
                     }
                 }
                 PermissionUtils.requestCode(Manifest.permission.WRITE_SETTINGS) -> {
-                    if (PermissionUtils.isGrantedSettingPermission(it)) {
-                        grantResults += Manifest.permission.WRITE_SETTINGS
-                    } else {
+                    if (!PermissionUtils.isGrantedSettingPermission(it)) {
                         deniedResults += Manifest.permission.WRITE_SETTINGS
                     }
                 }
                 PermissionUtils.requestCode(Manifest.permission.PACKAGE_USAGE_STATS) -> {
-                    if (PermissionUtils.isGrantedPackagePermission(it)) {
-                        grantResults += Manifest.permission.PACKAGE_USAGE_STATS
-                    } else {
+                    if (!PermissionUtils.isGrantedPackagePermission(it)) {
                         deniedResults += Manifest.permission.PACKAGE_USAGE_STATS
                     }
                 }
                 else -> {
                 }
-            }
-            if (grantResults.isNotEmpty()) {
-                mCallback?.onGrantedPermission(grantResults)
             }
             if (deniedResults.isNotEmpty()) {
                 mCallback?.onDeniedPermission(deniedResults)

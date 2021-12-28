@@ -44,4 +44,5 @@ dependencies {
     implementation project(':okpermission')
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    implementation 'io.github.thunderrule:bcarousel:1.0.1'
 }

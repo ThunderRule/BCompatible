@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference
 class Request(builder: Builder) {
     private val permissions: ArrayList<String> = builder.permissions
     private var context:WeakReference<FragmentActivity?>? = builder.context
+    private val isOrdered = builder.isOrdered
 
     fun getPermissions() = permissions
 
@@ -23,6 +24,7 @@ class Request(builder: Builder) {
 
     fun getContext() = context?.get()
 
+    fun getIsOrdered() = isOrdered
 
     fun clear(){
         context?.clear()
@@ -32,6 +34,7 @@ class Request(builder: Builder) {
     class Builder {
         internal var context:WeakReference<FragmentActivity?>? = null
         internal val permissions: ArrayList<String> = arrayListOf()
+        internal var isOrdered = false
 
         fun setContext(context: FragmentActivity?) = apply {
             this.context = WeakReference(context)
@@ -41,6 +44,9 @@ class Request(builder: Builder) {
             this.permissions.addAll(permissions)
         }
 
+        fun setIsOrdered(isOrdered:Boolean) = apply {
+            this.isOrdered = isOrdered
+        }
 
         fun build() = Request(this)
     }
