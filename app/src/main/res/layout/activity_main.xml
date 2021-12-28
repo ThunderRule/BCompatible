@@ -21,49 +21,57 @@
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="相机"
+                android:text="Camera"
                 android:id="@+id/bt_camera"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="日历"
+                android:text="Calendar"
                 android:id="@+id/bt_calendar"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="读写权限"
+                android:text="Storage"
                 android:id="@+id/bt_read_write"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="录音"
+                android:text="Recording"
                 android:id="@+id/bt_record"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="手机状态"
+                android:text="Phone state"
                 android:id="@+id/bt_phone_state"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="收发短信"
+                android:text="SMS"
                 android:id="@+id/bt_sms"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="蓝牙"
+                android:text="Bluetooth"
+                android:textAllCaps="false"
                 android:id="@+id/bt_bluetooth"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="定位"
+                android:text="Location"
+                android:textAllCaps="false"
                 android:id="@+id/bt_location"
                 android:layout_height="wrap_content"/>
 
@@ -79,37 +87,43 @@
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="安装"
+                android:text="Intall apk"
+                android:textAllCaps="false"
                 android:id="@+id/bt_install"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="系统浮窗"
+                android:text="System alert"
+                android:textAllCaps="false"
                 android:id="@+id/bt_alert"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="修改设置"
+                android:text="Write Setting"
+                android:textAllCaps="false"
                 android:id="@+id/bt_write_setting"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="读取包权限"
+                android:text="Package usage stats"
+                android:textAllCaps="false"
                 android:id="@+id/bt_package"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="多个权限"
+                android:text="Multiple permissions"
+                android:textAllCaps="false"
                 android:id="@+id/bt_many"
                 android:layout_height="wrap_content"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:text="弹窗拦截器"
+                android:text="Dialog Inteceptor"
+                android:textAllCaps="false"
                 android:id="@+id/bt_dialog"
                 android:layout_height="wrap_content"/>
 
@@ -126,8 +140,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Hello World!"
-            android:id="@+id/aaa" />
+            android:text="Request permissions result"
+            android:id="@+id/tv_reslut" />
 
     </androidx.core.widget.NestedScrollView>
 

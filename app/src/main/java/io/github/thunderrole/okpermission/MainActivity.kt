@@ -1,25 +1,22 @@
 package io.github.thunderrole.okpermission
 
 import android.Manifest
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import io.github.thunderrole.okpermission.interceptor.GoBack
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, GoBack {
 
-    private val TAG = "MainActivity"
     private var mText: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mText = findViewById<TextView>(R.id.aaa)
+        mText = findViewById<TextView>(R.id.tv_reslut)
         val camera = findViewById<TextView>(R.id.bt_camera)
         val install = findViewById<TextView>(R.id.bt_install)
         val alert = findViewById<TextView>(R.id.bt_alert)
@@ -63,12 +60,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, GoBack {
                     .addPermission(Manifest.permission.WRITE_CALENDAR)
             }
             R.id.bt_read_write -> {
-                okBuilder.addPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-                    .addPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                okBuilder.addPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                if (PermissionUtils.isHightAndroid11()){
+                    okBuilder.addPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+                }
             }
             R.id.bt_package -> {
-                okBuilder.addPermission(Manifest.permission.PACKAGE_USAGE_STATS)
+                if (PermissionUtils.isHightAndroid6()){
+                    okBuilder.addPermission(Manifest.permission.PACKAGE_USAGE_STATS)
+                }else{
+                    Toast.makeText(this, "This permission is not required for the current system version", Toast.LENGTH_SHORT).show()
+                }
             }
             R.id.bt_record -> {
                 okBuilder.addPermission(Manifest.permission.RECORD_AUDIO)
@@ -82,7 +85,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, GoBack {
                     .addPermission(Manifest.permission.USE_SIP)
             }
             R.id.bt_install -> {
-                okBuilder.addPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                if (PermissionUtils.isHightAndroid6()){
+                    okBuilder.addPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                }else{
+                    Toast.makeText(this, "This permission is not required for the current system version", Toast.LENGTH_SHORT).show()
+                }
             }
             R.id.bt_alert -> {
                 okBuilder.addPermission(Manifest.permission.SYSTEM_ALERT_WINDOW)
@@ -98,7 +105,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, GoBack {
                     .addPermission(Manifest.permission.RECEIVE_MMS)
             }
             R.id.bt_bluetooth -> {
-                okBuilder.addPermission(Manifest.permission.BLUETOOTH_CONNECT)
+                if (PermissionUtils.isHightAndroid12()){
+                    okBuilder.addPermission(Manifest.permission.BLUETOOTH_CONNECT)
+                }else{
+                    Toast.makeText(this, "This permission is not required for the current system version", Toast.LENGTH_SHORT).show()
+                }
             }
             R.id.bt_location -> {
                 okBuilder.addPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -108,7 +119,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, GoBack {
                 okBuilder.addPermission(Manifest.permission.CAMERA)
                     .addPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .addPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                if (PermissionUtils.isHightAndroid6()){
+                    okBuilder.addPermission(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                }
             }
             R.id.bt_dialog -> {
                 okBuilder.addPermission(Manifest.permission.CAMERA)

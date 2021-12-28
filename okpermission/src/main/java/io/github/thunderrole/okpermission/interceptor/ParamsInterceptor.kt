@@ -1,6 +1,5 @@
 package io.github.thunderrole.okpermission.interceptor
 
-import android.app.Activity
 import io.github.thunderrole.okpermission.PermissionUtils
 import io.github.thunderrole.okpermission.Response
 

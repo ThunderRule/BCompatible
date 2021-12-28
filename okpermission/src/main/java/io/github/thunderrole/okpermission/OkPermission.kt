@@ -1,6 +1,5 @@
 package io.github.thunderrole.okpermission
 
-import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import io.github.thunderrole.okpermission.interceptor.*
 
@@ -13,12 +12,10 @@ import io.github.thunderrole.okpermission.interceptor.*
 class OkPermission(builder:Builder) {
     private val mPermissions = builder.permissions
     private val mInterceptors = builder.interceptors
-    private val mIsOrdered = builder.isOrdered
 
     fun start(context: FragmentActivity?, callback: GoBack? = null) {
         val request = Request.Builder()
             .setPermissions(mPermissions)
-            .setIsOrdered(mIsOrdered)
             .setContext(context)
             .build()
 
@@ -44,7 +41,6 @@ class OkPermission(builder:Builder) {
     class Builder{
         internal val permissions = arrayListOf<String>()
         internal val interceptors = arrayListOf<Interceptor>()
-        internal var isOrdered = false
 
         fun addPermissions(permissions:List<String>) = apply {
             this.permissions += permissions
@@ -60,10 +56,6 @@ class OkPermission(builder:Builder) {
 
         fun addInterceptor(interceptor: Interceptor) = apply {
             this.interceptors += interceptor
-        }
-
-        fun setIsOrdered(isOrdered:Boolean) = apply {
-            this.isOrdered = isOrdered
         }
 
         fun build() = OkPermission(this)

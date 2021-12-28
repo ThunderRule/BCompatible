@@ -1,6 +1,5 @@
 package io.github.thunderrole.okpermission
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -10,7 +9,7 @@ import io.github.thunderrole.okpermission.interceptor.GoBack
 import io.github.thunderrole.okpermission.interceptor.Interceptor
 
 /**
- *  功能描述：
+ *  Function：
  *
  *
  * @date 2021/12/23
@@ -22,8 +21,10 @@ class DialogInterceptor : Interceptor {
         request.getContext()?.let { context ->
             if (!PermissionUtils.isAllGrantedPermission(context, permissions)) {
                 AlertDialog.Builder(request.getContext())
-                    .setMessage("为了能够为你提供更好的服务，我们需要以下权限：\n1、相机权限\n2、存储权限")
-                    .setNegativeButton("去授权") { aaa, _ ->
+                    .setMessage("In order to be able to provide you with better services, we need the following permissions:\n" +
+                            "1. Camera permissions\n" +
+                            "2. Storage permissions")
+                    .setNegativeButton("To authorize") { aaa, _ ->
                         showDeniedDialog(chain, callback, context)
                         aaa.dismiss()
                     }
@@ -39,12 +40,12 @@ class DialogInterceptor : Interceptor {
         chain.proceed(request) {
             if (it.foreverDenieds.isNotEmpty()) {
                 AlertDialog.Builder(request.getContext())
-                    .setMessage("因为你已完全关闭某些权限，抱歉你将无法完全使用我们的服务")
-                    .setNegativeButton("确定") { aaa, _ ->
+                    .setMessage("Because you have completely turned off some permissions, sorry you will not be able to fully use our services")
+                    .setNegativeButton("Ok") { aaa, _ ->
                         callback.onPermissionBack(it)
                         aaa.dismiss()
                     }
-                    .setNeutralButton("去设置"){ bbb,_->
+                    .setNeutralButton("Go to set"){ bbb,_->
                         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         intent.data = Uri.parse("package:${context.packageName}")
                         context.startActivity(intent)

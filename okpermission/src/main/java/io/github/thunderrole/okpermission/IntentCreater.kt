@@ -9,7 +9,7 @@ import android.provider.Settings
 
 /**
  *  Function：
- *
+ *  Special permission intent creater
  *
  * @date 2021/12/21
  */

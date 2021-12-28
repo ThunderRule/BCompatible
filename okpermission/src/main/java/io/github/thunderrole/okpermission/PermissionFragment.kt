@@ -3,13 +3,12 @@ package io.github.thunderrole.okpermission
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleObserver
 
 /**
- *  功能描述：
+ *  Function：
  *
  *
  * @date 2021/12/14
@@ -54,7 +53,7 @@ class PermissionFragment @JvmOverloads constructor(builder: Builder? = null) : F
     ) {
 
         if (permissions.isNullOrEmpty()
-            || grantResults == null || grantResults.isEmpty()
+            ||  grantResults.isEmpty()
         ) {
             return
         }

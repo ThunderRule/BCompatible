@@ -1,6 +1,5 @@
 package io.github.thunderrole.okpermission.interceptor
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import io.github.thunderrole.okpermission.*
 
