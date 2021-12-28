@@ -13,4 +13,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "BCompatible"
 include ':app'
-include ':compatible'
+include ':okpermission'
